@@ -37,6 +37,7 @@ class SequenceAssembler:
         tmpj = seqlst[maxj]
         del seqlst[seqlst.index(tmpi)]
         del seqlst[seqlst.index(tmpj)]
+        del hmap[(tmpi,tmpj)]
         seqlst.append(maxSeq)
         if maxVal < lMaxval:
             return self.computeMaxScore(seqlst, lMaxval, lMaxSeq, m, s, d, hmap)
@@ -59,15 +60,43 @@ class SequenceAssembler:
                 fij.append((table[i][j-1]) + d)
                 element = max(fij)
                 table[i][j] = element
-                ptr[i][j] = fij.index(element)
+                ptr[i][j] = fij.index(element)+1
                 if table[maxi][maxj] < element:
                     maxi = i
                     maxj = j
-        return table[maxi][maxj] , fi[0:maxi]+fj[maxj:]
+        # for i in range(len(table)):
+        #     print("")
+        #     for j in range(len(table[0])):
+        #         print(ptr[i][j],end = " ")
+        # print("------------------------------------")
+        # for i in range(len(table)):
+        #     print("")
+        #     for j in range(len(table[0])):
+        #         print(table[i][j],end = " ")
+        return table[maxi][maxj] , self.getSeq(fi, fj, ptr, maxi, maxj)
 
+    def getSeq(self, seqi, seqj, ptr, maxi, maxj):
+        res = seqj[maxj:]
+        while(ptr[maxi][maxj] != 0):
+            #print("\nMaxI :", maxi, "Max j: ", maxj, "Res: ", res)
+            if ptr[maxi][maxj] == 1:
+
+                res = seqi[maxi-1] + res
+                maxi -= 1
+                maxj -= 1
+            elif ptr[maxi][maxj] == 2:
+                res = seqi[maxi-1] + res
+                maxi -= 1
+            elif ptr[maxi][maxj] == 3:
+                res = seqj[maxj-1] + res
+                maxj -= 1
+        res = seqi[0:maxi] + res
+        return res
 if __name__ == "__main__":
     args = sys.argv
     hmap = dict()
     lst = SequenceAssembler().readFile(args[1])
-    print(SequenceAssembler().dpCalculation("ACCGT","CAGTGC", 2, -1, -1))
-    #print(SequenceAssembler().computeMaxScore(lst, 0, "",  int(args[2]), int(args[3]), int(args[4]),hmap))
+    #print(SequenceAssembler().dpCalculation("ACCGT","CAGTGC", 2, -2, -1))
+    outfile = open(args[5], "w+")
+    outfile.write(print(SequenceAssembler().computeMaxScore(lst, 0, "",  int(args[2]), int(args[3]), int(args[4]), hmap)))
+    outfile.close()
