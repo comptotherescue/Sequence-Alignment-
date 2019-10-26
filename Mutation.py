@@ -2,6 +2,7 @@ import random
 import sys
 
 class Mutation:
+    """Returns first sequence"""
     def genFirstSequence(self, num, A, C, G, T):
         sumTotal = A + C + G + T
         pA = A / sumTotal
@@ -12,7 +13,9 @@ class Mutation:
         for i in range(num):
             strlst.append(self.get_ACGT(pA, pC, pG, pT))
         return strlst
-
+    """
+    Returns ACGT According to probability
+    """
     def get_ACGT(self, pA, pC, pG, pT):
         rnum = random.random()
         if rnum <= pA:
@@ -37,7 +40,7 @@ class Mutation:
             else:
                 resch = "T"
         return resch
-
+    """Gets mutation"""
     def get_mutation(self, ch, pM):
         rnum = random.random()
         if rnum <= pM:
@@ -47,7 +50,9 @@ class Mutation:
             else:
                 return None
         return ch
-
+    """
+    Function to get n-1 sequences
+    """
     def get_sequences(self, strlst, pM):
         res = []
         for ch in strlst:
@@ -72,9 +77,12 @@ class Mutation:
         outfile.write(tmp)
         outfile.close()
 if __name__ == "__main__":
+    #Read arguments
     args = sys.argv
+    #Create first sequence
     strlst = Mutation().genFirstSequence(int(args[1]), int(args[2]), int(args[3]), int(args[4]), int(args[5]))
     n = int(args[6])
     Mutation().saveFastaFile("".join(strlst), args[8], "1")
+    #Create remaining n-1 sequences
     for i in range(n-1):
         Mutation().saveFastaFile("".join(Mutation().get_sequences(strlst, float(args[7]))), args[8], str(i+2))

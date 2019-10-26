@@ -64,21 +64,11 @@ class SequenceAssembler:
                 if table[maxi][maxj] < element:
                     maxi = i
                     maxj = j
-        # for i in range(len(table)):
-        #     print("")
-        #     for j in range(len(table[0])):
-        #         print(ptr[i][j],end = " ")
-        # print("------------------------------------")
-        # for i in range(len(table)):
-        #     print("")
-        #     for j in range(len(table[0])):
-        #         print(table[i][j],end = " ")
         return table[maxi][maxj] , self.getSeq(fi, fj, ptr, maxi, maxj)
 
     def getSeq(self, seqi, seqj, ptr, maxi, maxj):
         res = seqj[maxj:]
         while(ptr[maxi][maxj] != 0):
-            #print("\nMaxI :", maxi, "Max j: ", maxj, "Res: ", res)
             if ptr[maxi][maxj] == 1:
 
                 res = seqi[maxi-1] + res
@@ -96,7 +86,8 @@ if __name__ == "__main__":
     args = sys.argv
     hmap = dict()
     lst = SequenceAssembler().readFile(args[1])
-    #print(SequenceAssembler().dpCalculation("ACCGT","CAGTGC", 2, -2, -1))
     outfile = open(args[5], "w+")
-    outfile.write(print(SequenceAssembler().computeMaxScore(lst, 0, "",  int(args[2]), int(args[3]), int(args[4]), hmap)))
+    Score, Seq = SequenceAssembler().computeMaxScore(lst, 0, "",  int(args[2]), int(args[3]), int(args[4]), hmap)
+    tmp = "Score: "+ str(Score) + "Sequence: " + Seq
+    outfile.write(tmp)
     outfile.close()
